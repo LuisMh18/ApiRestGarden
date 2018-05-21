@@ -9,15 +9,11 @@ use AppHttpControllersController;
 use JWTAuth;
 use Tymon\JWTAuthExceptions\JWTException;
 use App\Usuario;
-use App\Reservation;
 use Auth;
 use Validator;
 use DB;
-use App\Traits\ApiResponser;
 
 class AuthenticateController extends Controller{
-
-  use ApiResponser;
 
   public function __construct(){
       // Aplicar el middleware jwt.auth a todos los métodos de este controlador

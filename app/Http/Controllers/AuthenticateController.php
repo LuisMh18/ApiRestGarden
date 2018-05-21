@@ -63,19 +63,8 @@ class AuthenticateController extends Controller{
                  ]);
        }
 
-       return response()->json([ 'token' => $token ], 200);
+       return response()->json([ 'token' => $token, 'data' => Auth::user() ], 200);
    }
-
-
-   public function getUser()
-    {
-        $data = Auth::user(); //usuario que inicio sesion
-
-        return response()->json(['data' => $data]);
-    }
-
-
-
 
 
    public function logout(Request $request) {

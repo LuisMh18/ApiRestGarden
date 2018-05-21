@@ -22,7 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //Login
 Route::post('login', 'AuthenticateController@login');
 Route::get('logout', 'AuthenticateController@logout');
-Route::get('getUser', 'AuthenticateController@getUser');
+
 
 //crear usuario(Cliente)
 Route::resource('users/clientes', 'FrontEnd\UsersController');

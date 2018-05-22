@@ -28,6 +28,11 @@ Route::get('logout', 'AuthenticateController@logout');
 Route::resource('users/clientes', 'FrontEnd\UsersController');
 
 
+//backend
+Route::resource('admin/almacen', 'BackEnd\AlmacenController', ['except' => ['create', 'edit']]);
+Route::post('admin/almacen/index', 'BackEnd\AlmacenController@index');//busquedas y ordenacion de resultados
+
+
 
 
 

@@ -14,6 +14,7 @@ use App\User;
 use App\Cliente;
 use Validator;
 use DB;
+use Hash;
 
 class UsersController extends Controller
 {
@@ -49,7 +50,7 @@ class UsersController extends Controller
             'rfc' => 'required|min:13|max:13',
             'nombre' => 'required|min:3|max:30',
             'paterno' => 'required|min:3',
-            'usuario' => 'required|unique:usuario',
+            'usuario' => 'required|unique:usuario|min:6|max:20',
             'email' => 'required|unique:usuario',//el email debe de ser unico en la tabla usuario
             'password' => 'required|min:6|confirmed'
         ]);
@@ -129,7 +130,164 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+
+
+        $reglas = [];
+
+
+        array_push($reglas
+        //, "usuario' => 'required|unique:usuario|min:6|max:20"
+        //,"password' => 'required|min:6|confirmed"
+      // ,"'usuario' => 'required|unique:usuario|min:6|max:20'"
+      ,"esto' es una \" prueba '"
+);
+
+/*
+$validate = Validator::make($request->all(), [
+    'usuario' => 'required|unique:usuario|min:6|max:20',
+ ]);
+
+
+
+
+ if ($validate->fails()) {
+    return response()->json([
+     'error' => 'validate',
+     'errors' => $validate->errors(),
+     'code' => 422
+    ]);
+}
+die;*/
+
+return response()->json($reglas[0]); die;
+        
+      /*  $cadena = "esto' es una \" prueba '\r";
+        $cadena3 = "'usuario' => 'required|unique:usuario|min:6|max:20'";
+       // echo $cadena; //Devolverá --> esto' es una " prueba '
+        echo $cadena3; //Devolverá --> esto' es una " prueba '
+
+       // return response()->json($cadena3);
+
+        die;*/
+
+    /*    array_push($reglas
+            , "'usuario' => 'required|unique:usuario|min:6|max:20'"
+        );
+
+
+       // 'usuario' => 'required|unique:usuario|min:6|max:20',
+
+       // var_dump($reglas[0]['usuario']); die;
+
+        return response()->json($reglas[0]);*/
+        
+
+         //si en caso de que lo que se busca no exista para esp se usa el metodo findOrFail
+         $user = User::findOrFail($id);
+          $contador = 0;
+          $regla1;
+          //mediante el metodo has verificamos que tengamos un campo con el nombre asignado
+          if($request->has('usuario')){
+
+            $contador++;
+            $regla1 = "'usuario' => 'required|unique:usuario|min:6|max:20'";
+
+            $validate = Validator::make($request->all(), [
+                'usuario' => 'required|unique:usuario|min:6|max:20',
+             ]);
+
+            
+        
+     
+           /* if ($validate->fails()) {
+                return response()->json([
+                 'error' => 'validate',
+                 'errors' => $validate->errors(),
+                 'code' => 422
+                ]);
+            }*/
+
+            $user->usuario = $request->usuario;
+          }
+    
+    
+          //comprobamos si el usuario a cambiado su contrasea
+          if($request->has('new_password')){
+             //en caso de que si comparamos que la contrasea enviada sea la misma a la de la bd
+            if (Hash::check($request->password, $user->password)) {
+    
+                    //validamos las nuevas contrasea
+                    $rule_pass = [
+                      'new_password' => 'min:6|confirmed',//la coontrasea debe de ser confirmada con un campo llamado password_confirmation
+                      'password' => 'required|min:6|confirmed'
+                    ];
+
+                    $contador++;
+                    $regla2 = "'new_password' => 'min:6|confirmed'";
+    
+                  // $this->validate($request, $rule_pass);
+    
+                 /*  if($request->new_password != $request->password_confirmation){
+                        return $this->errorResponse('El campo de confirmación de la nueva contraseña no coincide. ', 422);
+                   }*/
+                    
+                   $user->password = bcrypt($request->new_password);
+    
+                } else {
+
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Tu contraseña actual no coincide',
+                         422
+                    ]);
+                    
+                }
+              
+          }
+    
+           //el metodo isDirty valida si algunos e los valores originales ah cambiado su valor
+           if(!$user->isDirty()){
+             return response()->json([
+                'error' => true,
+                'message' => 'Se debe de especificar un valor diferente para actualizar',
+                 422
+            ]);
+           } else {
+
+            if($contador == 1){ 
+
+                $validate = Validator::make($request->all(), [
+                    $regla1,
+                 ]);
+         
+                if ($validate->fails()) {
+                    return response()->json([
+                     'error' => 'validate',
+                     'errors' => $validate->errors(),
+                     'code' => 422
+                    ]);
+                }
+
+            }
+
+            return response()->json([
+                'error' => true,
+                'message' => $contador,
+                 422
+            ]);
+
+           }
+    
+           die;
+           $user->save();
+
+           return response()->json([
+            'error' => false,
+            'message' => "Usuario $user->name actualizado exitosamente!",
+            'data' => $user,
+             200
+   ]);
     }
 
     /**

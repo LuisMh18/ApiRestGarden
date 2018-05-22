@@ -34,10 +34,23 @@ trait ApiResponser{
   
       /*Reglas para permitirle al usuario definir el numero de la paginación, como minimo seran 2 y como maximo 50 */
       $rules = [
-        'per_page' => 'integer|min:2|max:50'
+        'per_page' => 'integer|min:2|max:200'
       ];
   
       Validator::validate(request()->all(), $rules);//validamos
+      $r = request()->all();
+    /*  $validate = Validator::make($r, [
+        'per_page' => 'integer|min:2|max:200'
+      ]);
+
+
+    if ($validate->fails()) {
+        return response()->json([
+         'error' => 'validate',
+         'errors' => $validate->errors(),
+         'code' => 422
+        ]);
+    }*/
   
       $page = LengthAwarePaginator::resolveCurrentPage();
   
@@ -56,6 +69,12 @@ trait ApiResponser{
       $paginated->appends(request()->all());
   
       return $paginated;
+    }
+
+
+    public function miMetodo()
+    {
+      return 'Este es el resultado de miMetodo de miTrait';
     }
 
 

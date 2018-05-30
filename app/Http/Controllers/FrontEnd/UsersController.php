@@ -95,8 +95,6 @@ class UsersController extends Controller
 
         return response()->json(['data' => $user], 201);
 
-
-
     }
 
     /**

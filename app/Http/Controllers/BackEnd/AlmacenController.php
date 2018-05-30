@@ -89,7 +89,12 @@ class AlmacenController extends Controller
         $almacen->estatus = ($request->estatus != '' and $request->estatus >= 0 and $request->estatus < 2) ? $request->estatus : 0;
         $almacen->save();
 
-        return response()->json(['data' => $almacen], 201);
+        return response()->json([
+            'error' => false,
+            'message' => "Almacen $almacen->nombre creado exitosamente!",
+            'data' => $almacen,
+             201
+       ]);
     }
 
     /**
@@ -142,7 +147,12 @@ class AlmacenController extends Controller
     
            $almacen->save();
     
-           return response()->json(['data' => $almacen], 201);
+           return response()->json([
+            'error' => false,
+            'message' => "Almacen $almacen->nombre actualizado exitosamente!",
+            'data' => $almacen,
+             201
+          ]);
     
         }
     
@@ -150,6 +160,11 @@ class AlmacenController extends Controller
     public function destroy(Almacen $almacen)
     {
         $almacen->delete();
-        return response()->json(['data' => $almacen], 201);
+        return response()->json([
+            'error' => false,
+            'message' => "Almacen $almacen->nombre eliminado exitosamente!",
+            'data' => $almacen,
+             201
+          ]);
     }
 }

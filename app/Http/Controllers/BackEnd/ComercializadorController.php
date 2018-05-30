@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\BackEnd;
 
-use App\Almacen;
+use App\Comercializador;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +14,7 @@ use Validator;
 use DB;
 use App\Traits\ApiResponser;
 
-class AlmacenController extends Controller
+class ComercializadorController extends Controller
 {
 
     use ApiResponser;
@@ -22,7 +22,6 @@ class AlmacenController extends Controller
     public function __construct(){
         $this->middleware('jwt.auth');
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -30,10 +29,7 @@ class AlmacenController extends Controller
      */
     public function index(Request $request)
     {
-
-        //return $this->miMetodo();
-
-        $data = DB::table('almacen');
+        $data = DB::table('comercializador');
 
         $orden = ($request->order != '') ? $request->order : 'desc';
        // $campo = ($request->campo != '0') ? 'almacen.'.$request->campo : 'almacen.id';
@@ -41,14 +37,9 @@ class AlmacenController extends Controller
 
         if($request->has('search')){
             $data->where(function ($query) use ($search) {
-                $query->where('clave', 'like', '%'.$search.'%')
-                      ->orWhere('nombre',  'like', '%'.$search.'%')
-                      ->orWhere('almacen.created_at',  'like', '%'.$search.'%');
+                $query->where('nombre', 'like', '%'.$search.'%')
+                      ->orWhere('comercializador.created_at',  'like', '%'.$search.'%');
             });
-        }
-
-        if($request->estatus != 'todos'){
-            $data->where('estatus',  $request->estatus);
         }
 
                       
@@ -56,7 +47,6 @@ class AlmacenController extends Controller
         ->get();
 
         return $this->showAll($data);
-
     }
 
 
@@ -68,9 +58,7 @@ class AlmacenController extends Controller
      */
     public function store(Request $request)
     {
-
-          $validate = Validator::make($request->all(), [
-            'clave' => 'required|min:3',
+        $validate = Validator::make($request->all(), [
             'nombre' => 'required|min:3',
           ]);
  
@@ -83,16 +71,14 @@ class AlmacenController extends Controller
             ]);
         }
         
-        $almacen = new Almacen;
-        $almacen->clave = $request->clave;
-        $almacen->nombre = $request->nombre;
-        $almacen->estatus = ($request->estatus != '' and $request->estatus >= 0 and $request->estatus < 2) ? $request->estatus : 0;
-        $almacen->save();
+        $comercializador = new Comercializador;
+        $comercializador->nombre = $request->nombre;
+        $comercializador->save();
 
         return response()->json([
             'error' => false,
-            'message' => "Almacen $almacen->nombre creado exitosamente!",
-            'data' => $almacen,
+            'message' => "Comercializador $comercializador->nombre creado exitosamente!",
+            'data' => $comercializador,
              201
        ]);
     }
@@ -100,44 +86,31 @@ class AlmacenController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Almacen  $almacen
+     * @param  \App\Comercializador  $comercializador
      * @return \Illuminate\Http\Response
      */
-    public function show(Almacen $almacen)
+    public function show(Comercializador $comercializador)
     {
-        //$almacen = User::find($id);
-
-      //si en caso de que lo que se busca no exista para esp se usa el metodo findOrFail
-      //$almacen = User::findOrFail($id);
-      return response()->json(['data' => $almacen], 201);
+        return response()->json(['data' => $comercializador], 201);
     }
+
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Almacen  $almacen
+     * @param  \App\Comercializador  $comercializador
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Almacen $almacen)
+    public function update(Request $request, Comercializador $comercializador)
     {
-    
-          //mediante el metodo has verificamos que tengamos un campo con el nombre asignado, en este caso es
-          //el campo name, y si este viene entonces lo actualizamos
-          if($request->has('clave')){
-            $almacen->clave = $request->clave;
-          }
 
           if($request->has('nombre')){
-            $almacen->nombre = $request->nombre;
-          }
-
-          if($request->has('estatus')){
-            $almacen->estatus = ($request->estatus != '' and $request->estatus >= 0 and $request->estatus < 2) ? $request->estatus : 0;
+            $comercializador->nombre = $request->nombre;
           }
     
            //el metodo isDirty valida si algunos e los valores originales ah cambiado su valor
-           if(!$almacen->isDirty()){
+           if(!$comercializador->isDirty()){
              return response()->json([
                 'error' => true,
                 'message' => 'Se debe de especificar un valor diferente para actualizar',
@@ -145,25 +118,29 @@ class AlmacenController extends Controller
             ]);
            }
     
-           $almacen->save();
+           $comercializador->save();
     
            return response()->json([
             'error' => false,
-            'message' => "Almacen $almacen->nombre actualizado exitosamente!",
-            'data' => $almacen,
+            'message' => "Comercializador $comercializador->nombre actualizado exitosamente!",
+            'data' => $comercializador,
              201
           ]);
-    
-        }
-    
+    }
 
-    public function destroy(Almacen $almacen)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Comercializador  $comercializador
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Comercializador $comercializador)
     {
-        $almacen->delete();
+        $comercializador->delete();
         return response()->json([
             'error' => false,
-            'message' => "Almacen $almacen->nombre eliminado exitosamente!",
-            'data' => $almacen,
+            'message' => "Comercializador $comercializador->nombre eliminado exitosamente!",
+            'data' => $comercializador,
              201
           ]);
     }

@@ -28,9 +28,14 @@ Route::get('logout', 'AuthenticateController@logout');
 Route::resource('users/clientes', 'FrontEnd\UsersController');
 
 
-//backend
+//backend --
+//Almacen
 Route::resource('admin/almacen', 'BackEnd\AlmacenController', ['except' => ['create', 'edit']]);
 Route::post('admin/almacen/index', 'BackEnd\AlmacenController@index');//busquedas y ordenacion de resultados
+
+//Comercializador
+Route::resource('admin/comercializador', 'BackEnd\ComercializadorController', ['except' => ['create', 'edit']]);
+Route::post('admin/comercializador/index', 'BackEnd\ComercializadorController@index');
 
 
 

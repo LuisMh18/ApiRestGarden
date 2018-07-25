@@ -63,7 +63,22 @@ class AuthenticateController extends Controller{
                  ]);
        }
 
-       return response()->json([ 'token' => $token, 'data' => Auth::user() ], 200);
+      
+
+       $user = DB::table('usuario');
+       if(Auth::user()->rol_id === 1){
+            $user->join('cliente', 'usuario.id', '=', 'cliente.usuario_id')
+            ->select('usuario.id', 'email', 'usuario', 'rol_id', 'nombre_cliente', 'paterno', 'materno');
+       } else {
+            $user->join('usuario_detalle', 'usuario.id', '=', 'usuario_detalle.usuario_id')
+            ->select('usuario.id', 'email', 'usuario', 'rol_id', 'nombre', 'paterno', 'materno', 'imagen');      
+       }
+
+            $user = $user->where('usuario.id', Auth::user()->id)
+            ->first();
+
+
+       return response()->json([ 'token' => $token, 'data' => $user ], 200);
    }
 
 

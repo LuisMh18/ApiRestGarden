@@ -72,10 +72,33 @@ trait ApiResponser{
     }
 
 
-    public function miMetodo()
+    public function isAdmin()
     {
-      return 'Este es el resultado de miMetodo de miTrait';
+
+       return response()->json([
+                'error' => true,
+                'message' => 'No tienes permisos de administrador',
+                 401
+       ]);
+
+       // return $this->prueba();
+      
     }
+
+   /* public function miMetodo()
+    {
+
+      if(Auth::user()->rol_id !== 3){
+            return response()->json([
+                'error' => true,
+                'message' => 'No tienes permisos de administrador',
+                 401
+       ]);
+        } 
+
+        return $this->prueba();
+      
+    }*/
 
 
 

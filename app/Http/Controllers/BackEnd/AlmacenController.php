@@ -13,6 +13,7 @@ use Tymon\JWTAuthExceptions\JWTException;
 use Validator;
 use DB;
 use App\Traits\ApiResponser;
+use Auth;
 
 class AlmacenController extends Controller
 {
@@ -31,7 +32,11 @@ class AlmacenController extends Controller
     public function index(Request $request)
     {
 
-        //return $this->miMetodo();
+        if(Auth::user()->rol_id !== 3){
+        //return $this->miMetodo(); 
+          return $this->isAdmin(); 
+        }
+
 
         $data = DB::table('almacen');
 
@@ -47,7 +52,7 @@ class AlmacenController extends Controller
             });
         }
 
-        if($request->estatus != 'todos'){
+        if($request->estatus != 2){
             $data->where('estatus',  $request->estatus);
         }
 
@@ -57,6 +62,11 @@ class AlmacenController extends Controller
 
         return $this->showAll($data);
 
+    }
+
+    public function prueba()
+    {
+        return "XD";
     }
 
 

@@ -30,8 +30,12 @@ Route::resource('users/clientes', 'FrontEnd\UsersController');
 
 //backend --
 //Almacen
+Route::get('admin/almacen/data', 'BackEnd\AlmacenController@data');//todos los resultados
 Route::resource('admin/almacen', 'BackEnd\AlmacenController', ['except' => ['create', 'edit']]);
 Route::post('admin/almacen/index', 'BackEnd\AlmacenController@index');//busquedas y ordenacion de resultados
+
+
+
 
 //Comercializador
 Route::resource('admin/comercializador', 'BackEnd\ComercializadorController', ['except' => ['create', 'edit']]);

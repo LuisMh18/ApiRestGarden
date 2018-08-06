@@ -58,9 +58,30 @@ class AlmacenController extends Controller
 
                       
         $data = $data->orderBy('id', $orden)
+        ->select('id', 'clave', 'nombre', 'estatus', 'created_at')
         ->get();
 
         return $this->showAll($data);
+
+    }
+
+    public function data()
+    {
+
+        if(Auth::user()->rol_id !== 3){
+          return $this->isAdmin(); 
+        }
+
+        $data = DB::table('almacen')
+                    ->select('id', 'clave', 'nombre', 'estatus', 'created_at')
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+        return response()->json([
+            'error' => false,
+            'data' => $data,
+             201
+       ]);
 
     }
 
@@ -159,7 +180,7 @@ class AlmacenController extends Controller
     
            return response()->json([
             'error' => false,
-            'message' => "Almacen $almacen->nombre actualizado exitosamente!",
+            'message' => "Almacen $almacen->clave actualizado exitosamente!",
             'data' => $almacen,
              201
           ]);
@@ -172,7 +193,7 @@ class AlmacenController extends Controller
         $almacen->delete();
         return response()->json([
             'error' => false,
-            'message' => "Almacen $almacen->nombre eliminado exitosamente!",
+            'message' => "Almacen $almacen->clave eliminado exitosamente!",
             'data' => $almacen,
              201
           ]);

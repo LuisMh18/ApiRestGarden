@@ -24,23 +24,31 @@ Route::post('login', 'AuthenticateController@login');
 Route::get('logout', 'AuthenticateController@logout');
 
 
-//crear usuario(Cliente)
-Route::resource('users/clientes', 'FrontEnd\UsersController');
+//Rutas para los clientes -- front -- 
+Route::group(['middleware' => ['front']], function(){
+	//crear usuario(Cliente)
+	Route::resource('users/clientes', 'FrontEnd\UsersController');
+});
 
 
-//backend --
-//Almacen
-Route::get('admin/almacen/data', 'BackEnd\AlmacenController@data');//todos los resultados
-Route::resource('admin/almacen', 'BackEnd\AlmacenController', ['except' => ['create', 'edit']]);
-Route::post('admin/almacen/index', 'BackEnd\AlmacenController@index');//busquedas y ordenacion de resultados
+//rutas para los agentes -- backend --
+Route::group(['middleware' => ['agente']], function(){
+	
+});
 
 
+//rutas para el admin -- backend --
+Route::group(['middleware' => ['admin']], function(){
+	//Almacen
+	Route::get('admin/almacen/data', 'BackEnd\AlmacenController@data');//todos los resultados
+	Route::resource('admin/almacen', 'BackEnd\AlmacenController', ['except' => ['create', 'edit']]);
+	Route::post('admin/almacen/index', 'BackEnd\AlmacenController@index');//busquedas y ordenacion de resultados
+	//Comercializador
+	Route::get('admin/comercializador/data', 'BackEnd\ComercializadorController@data');//todos los resultados
+	Route::resource('admin/comercializador', 'BackEnd\ComercializadorController', ['except' => ['create', 'edit']]);
+	Route::post('admin/comercializador/index', 'BackEnd\ComercializadorController@index');
+});
 
-
-//Comercializador
-Route::get('admin/comercializador/data', 'BackEnd\ComercializadorController@data');//todos los resultados
-Route::resource('admin/comercializador', 'BackEnd\ComercializadorController', ['except' => ['create', 'edit']]);
-Route::post('admin/comercializador/index', 'BackEnd\ComercializadorController@index');
 
 
 

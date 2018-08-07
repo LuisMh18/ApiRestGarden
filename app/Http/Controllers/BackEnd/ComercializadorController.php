@@ -31,6 +31,8 @@ class ComercializadorController extends Controller
     public function index(Request $request)
     {
 
+
+
         if(Auth::user()->rol_id !== 3){
           return $this->isAdmin(); 
         }

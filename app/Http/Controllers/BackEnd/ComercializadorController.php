@@ -13,6 +13,7 @@ use Tymon\JWTAuthExceptions\JWTException;
 use Validator;
 use DB;
 use App\Traits\ApiResponser;
+use Auth;
 
 class ComercializadorController extends Controller
 {
@@ -29,6 +30,11 @@ class ComercializadorController extends Controller
      */
     public function index(Request $request)
     {
+
+        if(Auth::user()->rol_id !== 3){
+          return $this->isAdmin(); 
+        }
+
         $data = DB::table('comercializador');
 
         $orden = ($request->order != '') ? $request->order : 'desc';
@@ -44,9 +50,30 @@ class ComercializadorController extends Controller
 
                       
         $data = $data->orderBy('id', $orden)
+        ->select('id', 'nombre', 'created_at')
         ->get();
 
         return $this->showAll($data);
+    }
+
+    public function data()
+    {
+
+        if(Auth::user()->rol_id !== 3){
+          return $this->isAdmin(); 
+        }
+
+        $data = DB::table('comercializador')
+                    ->select('id', 'nombre', 'created_at')
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+        return response()->json([
+            'error' => false,
+            'data' => $data,
+             201
+       ]);
+
     }
 
 

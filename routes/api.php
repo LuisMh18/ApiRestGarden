@@ -38,6 +38,7 @@ Route::post('admin/almacen/index', 'BackEnd\AlmacenController@index');//busqueda
 
 
 //Comercializador
+Route::get('admin/comercializador/data', 'BackEnd\ComercializadorController@data');//todos los resultados
 Route::resource('admin/comercializador', 'BackEnd\ComercializadorController', ['except' => ['create', 'edit']]);
 Route::post('admin/comercializador/index', 'BackEnd\ComercializadorController@index');
 

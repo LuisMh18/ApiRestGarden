@@ -32,12 +32,6 @@ class AlmacenController extends Controller
     public function index(Request $request)
     {
 
-        if(Auth::user()->rol_id !== 3){
-        //return $this->miMetodo(); 
-          return $this->isAdmin(); 
-        }
-
-
         $data = DB::table('almacen');
 
         $orden = ($request->order != '') ? $request->order : 'desc';
@@ -56,7 +50,7 @@ class AlmacenController extends Controller
             $data->where('estatus',  $request->estatus);
         }
 
-                      
+
         $data = $data->orderBy('id', $orden)
         ->select('id', 'clave', 'nombre', 'estatus', 'created_at')
         ->get();
@@ -69,7 +63,7 @@ class AlmacenController extends Controller
     {
 
         if(Auth::user()->rol_id !== 3){
-          return $this->isAdmin(); 
+          return $this->isAdmin();
         }
 
         $data = DB::table('almacen')
@@ -104,8 +98,8 @@ class AlmacenController extends Controller
             'clave' => 'required|min:3',
             'nombre' => 'required|min:3',
           ]);
- 
- 
+
+
         if ($validate->fails()) {
             return response()->json([
              'error' => 'validate',
@@ -113,7 +107,7 @@ class AlmacenController extends Controller
              'code' => 422
             ]);
         }
-        
+
         $almacen = new Almacen;
         $almacen->clave = $request->clave;
         $almacen->nombre = $request->nombre;
@@ -152,7 +146,7 @@ class AlmacenController extends Controller
      */
     public function update(Request $request, Almacen $almacen)
     {
-    
+
           //mediante el metodo has verificamos que tengamos un campo con el nombre asignado, en este caso es
           //el campo name, y si este viene entonces lo actualizamos
           if($request->has('clave')){
@@ -166,7 +160,7 @@ class AlmacenController extends Controller
           if($request->has('estatus')){
             $almacen->estatus = ($request->estatus != '' and $request->estatus >= 0 and $request->estatus < 2) ? $request->estatus : 0;
           }
-    
+
            //el metodo isDirty valida si algunos e los valores originales ah cambiado su valor
            if(!$almacen->isDirty()){
              return response()->json([
@@ -175,18 +169,18 @@ class AlmacenController extends Controller
                  422
             ]);
            }
-    
+
            $almacen->save();
-    
+
            return response()->json([
             'error' => false,
             'message' => "Almacen $almacen->clave actualizado exitosamente!",
             'data' => $almacen,
              201
           ]);
-    
+
         }
-    
+
 
     public function destroy(Almacen $almacen)
     {

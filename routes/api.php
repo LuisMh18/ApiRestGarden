@@ -24,7 +24,7 @@ Route::post('login', 'AuthenticateController@login');
 Route::get('logout', 'AuthenticateController@logout');
 
 
-//Rutas para los clientes -- front -- 
+//Rutas para los clientes -- front --
 Route::group(['middleware' => ['front']], function(){
 	//crear usuario(Cliente)
 	Route::resource('users/clientes', 'FrontEnd\UsersController');
@@ -33,7 +33,7 @@ Route::group(['middleware' => ['front']], function(){
 
 //rutas para los agentes -- backend --
 Route::group(['middleware' => ['agente']], function(){
-	
+
 });
 
 
@@ -47,10 +47,8 @@ Route::group(['middleware' => ['admin']], function(){
 	Route::get('admin/comercializador/data', 'BackEnd\ComercializadorController@data');//todos los resultados
 	Route::resource('admin/comercializador', 'BackEnd\ComercializadorController', ['except' => ['create', 'edit']]);
 	Route::post('admin/comercializador/index', 'BackEnd\ComercializadorController@index');
+	//categoria
+	Route::get('admin/categorias/data', 'BackEnd\CategoriasController@data');//todos los resultados
+	Route::resource('admin/categorias', 'BackEnd\CategoriasController', ['except' => ['create', 'edit']]);
+	Route::post('admin/categorias/index', 'BackEnd\CategoriasController@index');
 });
-
-
-
-
-
-

@@ -31,12 +31,6 @@ class ComercializadorController extends Controller
     public function index(Request $request)
     {
 
-
-
-        if(Auth::user()->rol_id !== 3){
-          return $this->isAdmin(); 
-        }
-
         $data = DB::table('comercializador');
 
         $orden = ($request->order != '') ? $request->order : 'desc';
@@ -50,7 +44,7 @@ class ComercializadorController extends Controller
             });
         }
 
-                      
+
         $data = $data->orderBy('id', $orden)
         ->select('id', 'nombre', 'created_at')
         ->get();
@@ -60,10 +54,6 @@ class ComercializadorController extends Controller
 
     public function data()
     {
-
-        if(Auth::user()->rol_id !== 3){
-          return $this->isAdmin(); 
-        }
 
         $data = DB::table('comercializador')
                     ->select('id', 'nombre', 'created_at')
@@ -90,8 +80,8 @@ class ComercializadorController extends Controller
         $validate = Validator::make($request->all(), [
             'nombre' => 'required|min:3',
           ]);
- 
- 
+
+
         if ($validate->fails()) {
             return response()->json([
              'error' => 'validate',
@@ -99,7 +89,7 @@ class ComercializadorController extends Controller
              'code' => 422
             ]);
         }
-        
+
         $comercializador = new Comercializador;
         $comercializador->nombre = $request->nombre;
         $comercializador->save();
@@ -137,7 +127,7 @@ class ComercializadorController extends Controller
           if($request->has('nombre')){
             $comercializador->nombre = $request->nombre;
           }
-    
+
            //el metodo isDirty valida si algunos e los valores originales ah cambiado su valor
            if(!$comercializador->isDirty()){
              return response()->json([
@@ -146,9 +136,9 @@ class ComercializadorController extends Controller
                  422
             ]);
            }
-    
+
            $comercializador->save();
-    
+
            return response()->json([
             'error' => false,
             'message' => "Comercializador $comercializador->nombre actualizado exitosamente!",

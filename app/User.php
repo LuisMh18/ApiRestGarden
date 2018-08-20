@@ -2,11 +2,13 @@
 
 namespace App;
 
-use App\Cliente;
-
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\Cliente;
+use App\UsuarioDetalle;
+use App\Loge;
+use App\Rol;
+use App\Movimiento;
 //use App\Reservation;
 class User extends Authenticatable
 {
@@ -26,7 +28,7 @@ class User extends Authenticatable
     //el establecimiento de tal atributo por medio del metodo create o update
     protected $fillable = [
         'rol_id',
-        'usuario', 
+        'usuario',
         'email',
         'password',
     ];
@@ -38,7 +40,7 @@ class User extends Authenticatable
      */
      //atributos ocultos
      protected $hidden = [
-        'password', 
+        'password',
         'remember_token',
         'created_at',
         'updated_at',
@@ -49,10 +51,22 @@ class User extends Authenticatable
         return $this->hasMany(Cliente::class);
     }
 
+    public function usuarioDetalles(){
+  		return $this->hasMany(UsuarioDetalle::class);
+  	}
+
+  	public function loges(){
+  		return $this->hasMany(Loge::class);
+  	}
+
+  	public function rol(){
+  		return $this->belongsTo(Rol::class);
+  	}
+
+    public function movimientos(){
+  		return $this->hasMany(Movimiento::class);
+  	}
+
 
 
 }
-
-
-
-

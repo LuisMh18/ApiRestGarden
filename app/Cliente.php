@@ -1,9 +1,13 @@
 <?php
 
 namespace App;
-use App\User;
-
 use Illuminate\Database\Eloquent\Model;
+use App\User;
+use App\Pedido;
+use App\DireccionCliente;
+use App\TelefonoCliente;
+use App\ClienteFormaPago;
+use App\NivelDescuento;
 
 class Cliente extends Model
 {
@@ -20,9 +24,29 @@ class Cliente extends Model
         'razon_social',
     ];
 
-    public function user(){
 
+
+    public function direccionClientes(){
+  		return $this->hasMany(DireccionCliente::class);
+  	}
+
+  	public function telefonoClientes(){
+  		return $this->hasMany(TelefonoCliente::class);
+  	}
+
+  	public function pedidos(){
+  		return $this->hasMany(Pedido::class);
+  	}
+
+  	public function clienteFormaPagos(){
+  		return $this->hasMany(ClienteFormaPago::class);
+  	}
+
+    public function user(){
         return $this->belongsTo(User::class);
-        
     }
+
+  	public function nivelDescuento(){
+  		return $this->belongsTo(NivelDescuento::class);
+  	}
 }

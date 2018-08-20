@@ -24,19 +24,19 @@ class Front
             if($user->rol_id !== 1){
                   return response()->json([
                         'error' => true,
-                        'message' => 'No tienes permisos de agente',
+                        'message' => 'No tienes permisos de cliente',
                          401
                   ]);
             }
         }catch (JWTException $e) {
             if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
                 return response()->json([
-                    'token_expired'], 
+                    'token_expired'],
                     $e->getStatusCode()
                 );
             }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
                 return response()->json([
-                    'token_invalid'], 
+                    'token_invalid'],
                     $e->getStatusCode()
                 );
             }else{
@@ -44,7 +44,7 @@ class Front
                     'error'=>'Token is required'
                 ]);
             }
-        } 
+        }
 
          return $next($request);
 

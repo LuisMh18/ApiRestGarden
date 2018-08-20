@@ -4,8 +4,6 @@ namespace App\Http\Controllers\FrontEnd;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
-
 use AppHttpRequests;
 use AppHttpControllersController;
 use JWTAuth;
@@ -15,16 +13,20 @@ use App\Cliente;
 use Validator;
 use DB;
 use Hash;
+use Auth;
+use App\Traits\ApiResponser;
 
 class UsersController extends Controller
 {
+
+  use ApiResponser;
 
     public function __construct(){
         // Aplicar el middleware jwt.auth a todos los métodos de este controlador
         // excepto el método authenticate. No queremos evitar
         // el usuario de recuperar su token si no lo tiene ya
         $this->middleware('jwt.auth', ['except' => ['store']]);
-  
+
          //Route::group(['middleware' => 'authenticated'], function () {
      }
     /**
@@ -32,9 +34,45 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        $nivel = DB::table('cliente')
+              ->join('nivel_descuento', 'cliente.nivel_descuento_id', '=', 'nivel_descuento.id')
+              ->select('descripcion')
+              ->where('cliente.usuario_id', Auth::user()->id)
+              ->value('descripcion');
+
+        $data = DB::table('producto')
+          ->join('producto_precio', 'producto.id', '=', 'producto_precio.producto_id')
+          ->join('inventario', 'producto.id', '=', 'inventario.producto_id')
+          ->join('familia', 'producto.familia_id', '=', 'familia.id')
+          ->select('producto.id', 'nombre', 'color', 'foto', 'iva0', 'cantidad', 'precio', 'clave', 'tipo')
+          ->orderBy('producto.id', 'desc')
+          ->where('producto.estatus', 1)
+          ->where('producto_precio.estatus', 1);
+
+        if($request->categoria_id !== '0'){
+          $data->where('categoria_id', $request->categoria_id);
+        }
+
+        switch($nivel)
+        {
+            case 'Retail':
+                $data->where('tipo', 1);
+                break;
+            case 'Mayorista':
+                $data->where('tipo', 2);
+                break;
+            case 'Distribuidor':
+                $data->where('tipo', 3);
+                break;
+        }
+
+        $data = $data->get();
+
+      return $this->showAll($data);
+
     }
 
 
@@ -54,8 +92,8 @@ class UsersController extends Controller
             'email' => 'required|unique:usuario',//el email debe de ser unico en la tabla usuario
             'password' => 'required|min:6|confirmed'
         ]);
- 
- 
+
+
         if ($validate->fails()) {
             return response()->json([
              'error' => 'validate',
@@ -90,7 +128,7 @@ class UsersController extends Controller
         $cliente->nombre_comercial = ($request->nombre_comercial == "") ? "" : $request->nombre_comercial;
         $cliente->razon_social = ($request->razon_social == "") ? "" : $request->razon_social;
         $cliente->numero_cliente = date('Y').date('m').date("d").date('G').date('i').date('s').$user->id;
-        $cliente->save(); 
+        $cliente->save();
 
 
         return response()->json(['data' => $user], 201);
@@ -159,7 +197,7 @@ $validate = Validator::make($request->all(), [
 die;*/
 
 return response()->json($reglas[0]); die;
-        
+
       /*  $cadena = "esto' es una \" prueba '\r";
         $cadena3 = "'usuario' => 'required|unique:usuario|min:6|max:20'";
        // echo $cadena; //Devolverá --> esto' es una " prueba '
@@ -179,7 +217,7 @@ return response()->json($reglas[0]); die;
        // var_dump($reglas[0]['usuario']); die;
 
         return response()->json($reglas[0]);*/
-        
+
 
          //si en caso de que lo que se busca no exista para esp se usa el metodo findOrFail
          $user = User::findOrFail($id);
@@ -195,9 +233,9 @@ return response()->json($reglas[0]); die;
                 'usuario' => 'required|unique:usuario|min:6|max:20',
              ]);
 
-            
-        
-     
+
+
+
            /* if ($validate->fails()) {
                 return response()->json([
                  'error' => 'validate',
@@ -208,13 +246,13 @@ return response()->json($reglas[0]); die;
 
             $user->usuario = $request->usuario;
           }
-    
-    
+
+
           //comprobamos si el usuario a cambiado su contrasea
           if($request->has('new_password')){
              //en caso de que si comparamos que la contrasea enviada sea la misma a la de la bd
             if (Hash::check($request->password, $user->password)) {
-    
+
                     //validamos las nuevas contrasea
                     $rule_pass = [
                       'new_password' => 'min:6|confirmed',//la coontrasea debe de ser confirmada con un campo llamado password_confirmation
@@ -223,15 +261,15 @@ return response()->json($reglas[0]); die;
 
                     $contador++;
                     $regla2 = "'new_password' => 'min:6|confirmed'";
-    
+
                   // $this->validate($request, $rule_pass);
-    
+
                  /*  if($request->new_password != $request->password_confirmation){
                         return $this->errorResponse('El campo de confirmación de la nueva contraseña no coincide. ', 422);
                    }*/
-                    
+
                    $user->password = bcrypt($request->new_password);
-    
+
                 } else {
 
                     return response()->json([
@@ -239,11 +277,11 @@ return response()->json($reglas[0]); die;
                         'message' => 'Tu contraseña actual no coincide',
                          422
                     ]);
-                    
+
                 }
-              
+
           }
-    
+
            //el metodo isDirty valida si algunos e los valores originales ah cambiado su valor
            if(!$user->isDirty()){
              return response()->json([
@@ -253,12 +291,12 @@ return response()->json($reglas[0]); die;
             ]);
            } else {
 
-            if($contador == 1){ 
+            if($contador == 1){
 
                 $validate = Validator::make($request->all(), [
                     $regla1,
                  ]);
-         
+
                 if ($validate->fails()) {
                     return response()->json([
                      'error' => 'validate',
@@ -276,7 +314,7 @@ return response()->json($reglas[0]); die;
             ]);
 
            }
-    
+
            die;
            $user->save();
 

@@ -52,6 +52,17 @@ class UsersController extends Controller
           ->where('producto.estatus', 1)
           ->where('producto_precio.estatus', 1);
 
+          $search = $request->search;
+
+          if($request->has('search')){
+              $data->where(function ($query) use ($search) {
+                  $query->where('nombre', 'like', '%'.$search.'%')
+                        ->orWhere('color',  'like', '%'.$search.'%')
+                        ->orWhere('precio',  'like', '%'.$search.'%')
+                        ->orWhere('clave',  'like', '%'.$search.'%');
+              });
+          }
+
         if($request->categoria_id !== '0'){
           $data->where('categoria_id', $request->categoria_id);
         }
@@ -73,6 +84,19 @@ class UsersController extends Controller
 
       return $this->showAll($data);
 
+    }
+
+    public function categorias(){
+      $data = DB::table('categoria')
+              ->orderBy('categoria', 'asc')
+              ->where('estatus', 1)
+              ->get();
+
+      return response()->json([
+          'error' => false,
+          'data' => $data,
+           201
+     ]);
     }
 
 

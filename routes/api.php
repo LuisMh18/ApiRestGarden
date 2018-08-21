@@ -26,8 +26,9 @@ Route::get('logout', 'AuthenticateController@logout');
 
 //Rutas para los clientes -- front --
 Route::group(['middleware' => ['front']], function(){
+	Route::get('clientes/categorias', 'FrontEnd\UsersController@categorias');
 	Route::resource('clientes', 'FrontEnd\UsersController');
-	Route::post('clientes/index', 'FrontEnd\UsersController@index');//busquedas y ordenacion de resultados
+	Route::post('clientes/index', 'FrontEnd\UsersController@index');//busquedas y ordenacion de resultado
 });
 
 

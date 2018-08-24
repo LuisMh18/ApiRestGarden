@@ -56,10 +56,8 @@ class UsersController extends Controller
 
           if($request->has('search')){
               $data->where(function ($query) use ($search) {
-                  $query->where('nombre', 'like', '%'.$search.'%')
-                        ->orWhere('color',  'like', '%'.$search.'%')
-                        ->orWhere('precio',  'like', '%'.$search.'%')
-                        ->orWhere('clave',  'like', '%'.$search.'%');
+                  $query->where('clave', 'like', '%'.$search.'%')
+                        ->orWhere('nombre',  'like', '%'.$search.'%');
               });
           }
 

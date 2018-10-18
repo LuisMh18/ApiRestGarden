@@ -52,4 +52,10 @@ Route::group(['middleware' => ['admin']], function(){
 	Route::get('admin/categorias/data', 'BackEnd\CategoriasController@data');//todos los resultados
 	Route::resource('admin/categorias', 'BackEnd\CategoriasController', ['except' => ['create', 'edit']]);
 	Route::post('admin/categorias/index', 'BackEnd\CategoriasController@index');
+	//usuarios
+	Route::get('admin/usuarios/data', 'BackEnd\UsuariosController@data');//todos los resultados
+	Route::get('admin/usuarios/rol', 'BackEnd\UsuariosController@roles');//roles de usuario
+	Route::resource('admin/usuarios', 'BackEnd\UsuariosController', ['except' => ['create', 'edit']]);
+	Route::post('admin/usuarios/index', 'BackEnd\UsuariosController@index');
+
 });

@@ -79,11 +79,6 @@ class AlmacenController extends Controller
 
     }
 
-    public function prueba()
-    {
-        return "XD";
-    }
-
 
     /**
      * Store a newly created resource in storage.

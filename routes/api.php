@@ -35,6 +35,7 @@ Route::group(['middleware' => ['front']], function(){
 //rutas para los agentes -- backend --
 Route::group(['middleware' => ['agente']], function(){
 	Route::post('agentes', 'BackEnd\AgentesController@index');//busquedas y ordenacion de resultados
+	Route::get('agentes/verPedido/{id_pedido}/{id_cliente}', 'BackEnd\AgentesController@verPedido');//busquedas y ordenacion de resultados
 });
 
 

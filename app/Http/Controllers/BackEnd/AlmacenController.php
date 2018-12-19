@@ -129,7 +129,7 @@ class AlmacenController extends Controller
 
       //si en caso de que lo que se busca no exista para esp se usa el metodo findOrFail
       //$almacen = User::findOrFail($id);
-      return response()->json(['data' => $almacen], 201);
+      return response()->json(['data' => $almacen], 200);
     }
 
     /**

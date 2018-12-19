@@ -59,4 +59,7 @@ Route::group(['middleware' => ['admin']], function(){
 	Route::resource('admin/usuarios', 'BackEnd\UsuariosController', ['except' => ['create', 'edit']]);
 	Route::post('admin/usuarios/index', 'BackEnd\UsuariosController@index');
 
+	//Inventario
+	Route::post('admin/inventario', 'BackEnd\InventarioController@index');//todos los resultados
+
 });
